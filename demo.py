@@ -48,10 +48,46 @@ class QQInstance():
 
 
 import termios
+from qqbot import _bot as bot,qqbotslot
+import sys
+import termios,fcntl,struct
 
-class chat_window(self):
-    def init(self,contact):
+class chat_window:
+    def init(self,title):
         self.disable_io()
+        self.title = title
+        self.panel = []
+        self.height ,self.width = self.get_size()
+        self.cursor = 0
+        
+    def render_once(self):
+        sys.stdout.write('\x1b[1;1H\x1b[0m')
+        rows = self.height - 6
+        if len(self.panel)<>0:
+            for i in self.panel:
+                if len(i[0]) > (self.width/2-1):
+                    for j in range(len(i[0])//(self.width/2-1)+1):
+                        if j<(len(i[0])//(self.width/2-1)):
+                            sys.stdout.write('\x1b['+str(rows+j)+';1H\x1b[7m'+i[0][j*(self.width/2-1):(j+1)*(self.width/2-1)])
+                        else:
+                            sys.stdout.write('\x1b['+str(rows+j)+';1H\x1b[7m'+i[0][j*(self.width/2-1):])
+                        rows += 1
+
+
+    
+    
+    
+    def flush_edit(self):
+        sys.stdout.write('\x1b['+str(self.height-6)+';0H')
+        sys.stdout.write('\x1b[J')
+    
+    def flush_screen(self):
+        sys.stdout.write('\x1b['+str(height-1)+';'+str(self.width)+'H\x1b[0m'))
+        sys.stdout.write('\x1b[2J\x1b[0m')
+        
+    def get_size(self):
+        fd = sys.stdin.fileno()
+        return struct.unpack('hh',fcntl.ioctl(fd,termios.TIOCGWINSZ,'xxxx'))
 
     def disable_io(self):
         termIn_new = termios.tcgetattr(0)
@@ -73,3 +109,5 @@ class chat_window(self):
     def recover_io(self):
         termios.tcsetattr(0,termios,TCSANOW,self.termIn_old)
         termios.tcsetattr(1,termios,TCSANOW,self.termOut_old)
+
+    def
