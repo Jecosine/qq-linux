@@ -45,3 +45,31 @@ class QQInstance():
     def update_state(self):
         #update the information of each title
         #update the chatting windows information
+
+
+import termios
+
+class chat_window(self):
+    def init(self,contact):
+        self.disable_io()
+
+    def disable_io(self):
+        termIn_new = termios.tcgetattr(0)
+        termOut_new = termios.tcgetattr(1)
+        self.termIn_old = termios.tcgetattr(0)
+        self.termOut_old = termios.tcgetattr(1)
+        #set termios.VTIME termios.VTMIN termios.ECHO and termios.ICANON
+        termIn_new[3] &= ~(termios.ECHO | termios.ICANON)
+        termOut_new[3] &= ~(termios.ECHO | termios.ICANON)
+        termIn_new[6][termios.VTIME] = 1
+        termOut_new[6][temrios.VTIME] = 1
+        
+        termIn_new[6][termios.VMIN] = 0
+        termOut_new[6][termios.VMIN] = 0
+
+        termios.tcsetattr(0,termios.TCSNOW,termIn_new)
+        termios.tcsetattr(1,termios.TCSNOW,termOut_new)
+
+    def recover_io(self):
+        termios.tcsetattr(0,termios,TCSANOW,self.termIn_old)
+        termios.tcsetattr(1,termios,TCSANOW,self.termOut_old)
