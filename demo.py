@@ -52,14 +52,19 @@ from qqbot import _bot as bot,qqbotslot
 import sys
 import termios,fcntl,struct
 
-class chat_window:
+class Chat_Window:
     def init(self,title):
         self.disable_io()
         self.title = title
         self.panel = []
         self.height ,self.width = self.get_size()
         self.cursor = 0
-        
+    def add_message(self,contact,member,content)
+        self.panel.append([str(member.card).content])
+    def refresh_message(self):
+        render_once()
+        render_edit()
+
     def render_once(self):
         sys.stdout.write('\x1b[1;1H\x1b[0m')
         content = ''
@@ -73,6 +78,7 @@ class chat_window:
         sys.stdout.write('\x1b['+str(self.height-6)+';1H\x1b[7m'+' '*self.width+'\x1b[0m')
         sys.stdout.write('\x1b['+str(self.height-5)+';1H\x1b[J')
         sys.stdout.write(self.draft)
+
     def render_test(self):
         self.render_once()
         sys.stdout.write('\x1b['+str(self.height-6)+';1H\x1b[7m'+' '*self.width+'\x1b[0m')
@@ -82,21 +88,26 @@ class chat_window:
         c = sys.stdin.read(1)
         lastchar = ''
         m = ''
-        while (lastchar <> '\n'):
-            s = ''
-            lastchar = ''
-            if (c):
-                if ord(c) not in range(128):
-                    s = c
-                    s += sys.stdin.read(2)
-                    sys.stdout.write(s)
-                    lastchar = s[-1]
-                    m += s
-                else:
-                    lastchar = c
-                    m += c
-                    sys.stdout.write(c)
-            c = sys.stdin.read(1)
+        while (self.refresh == False):
+            if lastchar <> '\n':
+                
+                s = ''
+                lastchar = ''
+                if (c):
+                    if ord(c) not in range(128):
+                        s = c
+                        s += sys.stdin.read(2)
+                        sys.stdout.write(s)
+                        lastchar = s[-1]
+                        m += s
+                    else:
+                        lastchar = c
+                        m += c
+                        sys.stdout.write(c)
+                    self.draft = m
+                c = sys.stdin.read(1)
+            else:
+                self.draft = ""
         
 
 
