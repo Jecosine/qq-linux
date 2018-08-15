@@ -45,6 +45,13 @@ while 1:
             m += s
         elif c == "\n":
             break
+        elif c=="/":
+            sys.stdout.write('\x1b[36;1H')
+            command = sys.stdin.readline()
+            sys.stdout.write(command)
+            if "q" in command:
+                bi.restore()
+                sys.exit()
         else:
             lastchar = c
             m += c
