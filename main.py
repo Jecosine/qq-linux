@@ -12,6 +12,7 @@ class Chat(BaseSession):
             self.draft = "" #Save the draft when refreshing interrupt
             self.log = "" #Log displaying at bottom
         self.exit = False
+        self.current_contact = None
 
     def main_session(self):
         #Init screen
@@ -40,6 +41,15 @@ class Chat(BaseSession):
                 elif c == "\n":
                     break
                 elif c=="/":
+                    """
+                        commands:
+                            cd buddy Tony
+                            cd group class1
+                            cd discuss banana-group
+                            quit
+
+                    """
+                    
                     sys.stdout.write('\x1b[36;1H')
                     command = sys.stdin.readline()
                     sys.stdout.write(command)
@@ -57,6 +67,7 @@ class Chat(BaseSession):
             row = calculate(content)
             if (m):
                 # content.append(['User MJ',m])
+                self.SendTo()
                 if row > 28:   
                     sys.stdout.write('\x1b['+str(29)+';1H\x1b[7m'+content[-1][0]+'\n\x1b[0m\x1b[K'+content[-1][1]+'\x1b[K\x1b[0m\n'+'\x1b[K\x1b[0m\n'*7)
                 else:
