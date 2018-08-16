@@ -58,9 +58,17 @@ class Chat(BaseSession):
                     commands = command.split(' ',2)
                     if (commands[0] == "cd") and len(commands) == 3:
                         if commands[1] in ['buddy','group','discuss']:
-                            self.current_contact = self.db.List(commands[1],commands[2])[0]
-                            if len(self.current_contact)<>0:
+                            if len(self.db.List(commands[1],commands[2])) <> 0:
+                                self.current_contact = self.db.List(commands[1],commands[2])[0]
+                            else:
+                                #print log:Not exist
+                        else:
+                            #log:Unknown type
+                    elif commands[0]=='quit':
+                        bi.restore()
+                        sys.exit()
 
+                                
                 else:
                     lastchar = c
                     m += c
@@ -71,8 +79,14 @@ class Chat(BaseSession):
              #   time.sleep(0.1)
             row = calculate(content)
             if (m):
+                if self.current_contact <> None:
+                    self.SendTo(self.current_contact,m)
                 # content.append(['User MJ',m])
-                self.SendTo()
+                #Check update
+                result = self.poll()
+            #analyze result
+            #use new thread to sync message
+            #if get new message
                 if row > 28:   
                     sys.stdout.write('\x1b['+str(29)+';1H\x1b[7m'+content[-1][0]+'\n\x1b[0m\x1b[K'+content[-1][1]+'\x1b[K\x1b[0m\n'+'\x1b[K\x1b[0m\n'*7)
                 else:
