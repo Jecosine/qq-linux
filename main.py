@@ -1,4 +1,5 @@
 from basic import BaseQSession as BaseSession
+from qqbot.qcontactdb import QContactDB 
 import base_input as bi
 import sys
 
@@ -10,6 +11,7 @@ class Chat(BaseSession):
             self.Logger("Login Error")
         else:
             self.draft = "" #Save the draft when refreshing interrupt
+            self.db = QContactDB(self)
             self.log = "" #Log displaying at bottom
         self.exit = False
         self.current_contact = None
@@ -53,9 +55,12 @@ class Chat(BaseSession):
                     sys.stdout.write('\x1b[36;1H')
                     command = sys.stdin.readline()
                     sys.stdout.write(command)
-                    if "q" in command:
-                        bi.restore()
-                        sys.exit()
+                    commands = command.split(' ',2)
+                    if (commands[0] == "cd") and len(commands) == 3:
+                        if commands[1] in ['buddy','group','discuss']:
+                            self.current_contact = self.db.List(commands[1],commands[2])[0]
+                            if len(self.current_contact)<>0:
+
                 else:
                     lastchar = c
                     m += c
